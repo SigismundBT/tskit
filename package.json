@@ -1,0 +1,21 @@
+{
+  "name": "tskit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier --write .",
+    "release": "bumpp"
+  },
+  "bin": {
+    "tskit": "./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "bumpp": "^10.2.0",
+    "prettier": "^3.6.0"
+  }
+}
