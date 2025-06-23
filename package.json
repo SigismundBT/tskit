@@ -1,6 +1,6 @@
 {
-  "name": "tskit",
-  "version": "1.0.0",
+  "name": "@sigbt/tskit",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
