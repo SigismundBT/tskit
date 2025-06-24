@@ -38,7 +38,7 @@ pkg.scripts = {
     !pkg.scripts?.test || pkg.scripts.test.trim() === 'echo "Error: no test specified" && exit 1'
       ? 'vitest run'
       : pkg.scripts.test,
-  release: pkg.scripts?.release || 'bumpp',
+  release: pkg.scripts?.release || 'bumpp --commit --tag',
   start: pkg.scripts?.start || 'node dist/index.js'
 };
 
@@ -115,8 +115,7 @@ const tsconfig = {
     resolveJsonModule: true
   },
   include: [
-    'src/**/*.ts',
-    'src/**/*.tsx',
+    'src/**/*',
     '**/*.test.ts',
     '**/*.spec.ts',
     'vitest.config.ts'
