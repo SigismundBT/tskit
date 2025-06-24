@@ -1,6 +1,6 @@
 {
   "name": "@sigbt/tskit",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "@sigismundbt's personal TypeScript init kit.",
   "license": "MIT",
   "author": "Peyton Lu",
@@ -11,7 +11,7 @@
   "main": "index.js",
   "scripts": {
     "format": "prettier --write .",
-    "release": "bumpp"
+    "release": "bumpp --commit --tag"
   },
   "bin": {
     "tskit": "./index.js"
