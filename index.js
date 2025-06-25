@@ -42,13 +42,9 @@ pkg.scripts = {
   start: pkg.scripts?.start || 'node dist/index.js'
 };
 
-// Add required devDependencies (non-versioned)
+// Add devDependencies
 pkg.devDependencies = {
-  ...pkg.devDependencies,
-  prettier: pkg.devDependencies?.prettier || '*',
-  typescript: pkg.devDependencies?.typescript || '*',
-  vitest: pkg.devDependencies?.vitest || '*',
-  bumpp: pkg.devDependencies?.bumpp || '*'
+  ...pkg.devDependencies
 };
 
 // Reorder package.json fields (custom order)
@@ -159,6 +155,6 @@ console.log('✅ .gitignore created.');
 
 // Install dev dependencies
 console.log('📦 Installing dev dependencies...');
-execSync('pnpm install', { stdio: 'inherit' });
+execSync('pnpm add -D bumpp prettier vitest typescript', { stdio: 'inherit' });
 
 console.log('\n🎉 Initialization complete.');
