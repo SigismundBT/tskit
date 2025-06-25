@@ -1,6 +1,6 @@
 {
   "name": "@sigbt/tskit",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "@sigismundbt's personal TypeScript init kit.",
   "license": "MIT",
   "author": "Peyton Lu",
