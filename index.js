@@ -32,7 +32,9 @@ pkg.types = 'dist/index.d.ts';
 pkg.scripts = {
   ...pkg.scripts,
   dev: pkg.scripts?.dev || 'pnpm run build',
-  build: pkg.scripts?.build || 'node build.mjs',
+  ['build:type']: pkg.scripts?.['build:type'] || 'tsc --emitDeclarationOnly',
+  ['build:js']: pkg.scripts?.['build:js'] || 'node build.mjs',
+  build: pkg.scripts?.build || 'pnpm run build:type && pnpm run build:js',
   format: pkg.scripts?.format || 'prettier --write .',
   test:
     !pkg.scripts?.test || pkg.scripts.test.trim() === 'echo "Error: no test specified" && exit 1'
@@ -99,25 +101,28 @@ console.log('✅ .prettierrc created.');
 
 // Generate tsconfig.json
 const tsconfig = {
-  compilerOptions: {
-    target: 'esnext',
-    module: 'es2022',
-    moduleResolution: 'node',
-    outDir: 'dist',
-    strict: true,
-    esModuleInterop: true,
-    forceConsistentCasingInFileNames: true,
-    skipLibCheck: true,
-    resolveJsonModule: true
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "es2022",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "moduleResolution": "node",
+    "declarationMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "": [""]
+    }
   },
-  include: [
-    'src/**/*',
-    '**/*.test.ts',
-    '**/*.spec.ts',
-    'vitest.config.ts'
-  ],
-  exclude: ['node_modules', 'dist']
+  "include": ["src/**/*", "index copy.ts"],
+  "exclude": ["node_modules", "dist"]
 };
+
 writeFileSync(path.join(cwd, 'tsconfig.json'), JSON.stringify(tsconfig, null, 2));
 console.log('✅ tsconfig.json created.');
 
@@ -140,18 +145,47 @@ console.log('✅ vitest.config.ts created.');
 
 // Generate .gitignore
 const gitignore = `
-node_modules
+node_modules/
+tempDir/
+dist/
+build.mjs
+
 *.log
-dist
 .cache
 .env
-playground
 .idea
 .DS_Store
 .eslintcache
+vitest.config.ts.map
 `;
 writeFileSync(path.join(cwd, '.gitignore'), gitignore);
 console.log('✅ .gitignore created.');
+
+// Generate .npmignore
+const npmignore = `
+src/
+test/
+__tests__/
+*.test.ts
+*.spec.ts
+
+.idea
+.DS_Store
+.eslintcache
+.cache
+.vitest/
+.vscode/
+coverage/
+*.log
+*.tsbuildinfo
+
+tsconfig.json
+vitest.config.ts
+*.d.ts.map
+build.mjs
+`;
+writeFileSync(path.join(cwd, '.npmignore'), npmignore);
+console.log('✅ .npmignore created.');
 
 // Install dev dependencies
 console.log('📦 Installing dev dependencies...');
