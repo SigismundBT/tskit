@@ -23,6 +23,8 @@ pkg.description = pkg.description || '';
 pkg.license = pkg.license || 'MIT';
 pkg.author = pkg.author || '';
 pkg.repository = pkg.repository || { type: '', url: '' };
+pkg.bugs = { type: '', url: '' };
+pkg.homepage = '';
 pkg.type = 'module';
 // pkg.packageManager left unchanged if already set
 pkg.main = 'dist/index.js';
@@ -58,6 +60,8 @@ const sortedPkg = {
   license: pkg.license,
   author: pkg.author,
   repository: pkg.repository,
+  bugs: pkg.bugs,
+  homepage: pkg.homepage,
   main: pkg.main,
   types: pkg.types,
   type: pkg.type,
@@ -189,6 +193,6 @@ console.log('✅ .npmignore created.');
 
 // Install dev dependencies
 console.log('📦 Installing dev dependencies...');
-execSync('pnpm add -D bumpp prettier vitest typescript', { stdio: 'inherit' });
+execSync('pnpm add -D bumpp prettier vitest typescript @types/node', { stdio: 'inherit' });
 
 console.log('\n🎉 Initialization complete.');
