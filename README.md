@@ -12,11 +12,10 @@ npx @sigbt/tskit
 ## What it does
 
 - Creates `src/` and `dist/` directories
-- Adds `.prettierrc`, `tsconfig.json`, `vitest.config.ts`, and `.gitignore`
-- Injects default scripts into `package.json`:
-  - `dev`, `build`, `format`, `test`, `release`, `start`
+- Adds `.prettierrc`, `tsconfig.json`, `vitest.config.ts`, `.gitignore`, `.npmignore`, and `mostir.config.mjs`
+- Injects default scripts into `package.json`
 - Adds devDependencies:
-  - `prettier`, `typescript`, `vitest`, `bumpp`
+  - `prettier`, `typescript`, `vitest`, `bumpp`, `mostir`
 
 ## Requirements
 

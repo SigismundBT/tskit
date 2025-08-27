@@ -3,6 +3,7 @@
 import { execSync } from 'child_process';
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import path from 'path';
+import dedent from 'dedent';
 
 const cwd = process.cwd();
 
@@ -11,7 +12,9 @@ console.log('🛠️ @SigismundBT setup configurating...');
 // Check if package.json exists
 const pkgPath = path.join(cwd, 'package.json');
 if (!existsSync(pkgPath)) {
-  console.error("❌ package.json does not exist, please run 'pnpm init' first.");
+  console.error(
+    "❌ package.json does not exist, please run 'pnpm init' first."
+  );
   process.exit(1);
 }
 
@@ -23,9 +26,14 @@ pkg.description = pkg.description || '';
 pkg.license = pkg.license || 'MIT';
 pkg.author = pkg.author || '';
 pkg.repository = pkg.repository || { type: '', url: '' };
-pkg.bugs = { type: '', url: '' };
+pkg.bugs = { url: '' };
 pkg.homepage = '';
 pkg.type = 'module';
+pkg.bin = 'delete if your project is not a cli project';
+pkg.files = `"dist",
+  "README.md",
+  "LICENSE"`;
+pkg.engines = '>=18';
 // pkg.packageManager left unchanged if already set
 pkg.main = 'dist/index.js';
 pkg.types = 'dist/index.d.ts';
@@ -39,7 +47,8 @@ pkg.scripts = {
   build: pkg.scripts?.build || 'pnpm run build:type && pnpm run build:js',
   format: pkg.scripts?.format || 'prettier --write .',
   test:
-    !pkg.scripts?.test || pkg.scripts.test.trim() === 'echo "Error: no test specified" && exit 1'
+    !pkg.scripts?.test ||
+    pkg.scripts.test.trim() === 'echo "Error: no test specified" && exit 1'
       ? 'vitest run'
       : pkg.scripts.test,
   release: pkg.scripts?.release || 'bumpp --commit --tag',
@@ -105,33 +114,36 @@ console.log('✅ .prettierrc created.');
 
 // Generate tsconfig.json
 const tsconfig = {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "es2022",
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "moduleResolution": "node",
-    "declarationMap": true,
-    "outDir": "dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "baseUrl": ".",
-    "paths": {
-      "": [""]
+  compilerOptions: {
+    target: 'esnext',
+    module: 'es2022',
+    declaration: true,
+    emitDeclarationOnly: true,
+    moduleResolution: 'node',
+    declarationMap: false,
+    outDir: 'dist',
+    strict: true,
+    esModuleInterop: true,
+    forceConsistentCasingInFileNames: true,
+    skipLibCheck: true,
+    resolveJsonModule: true,
+    baseUrl: '.',
+    paths: {
+      '': ['']
     }
   },
-  "include": ["src/**/*", "index copy.ts"],
-  "exclude": ["node_modules", "dist"]
+  include: ['src/**/*', 'index copy.ts'],
+  exclude: ['node_modules', 'dist']
 };
 
-writeFileSync(path.join(cwd, 'tsconfig.json'), JSON.stringify(tsconfig, null, 2));
+writeFileSync(
+  path.join(cwd, 'tsconfig.json'),
+  JSON.stringify(tsconfig, null, 2)
+);
 console.log('✅ tsconfig.json created.');
 
 // Generate vitest.config.ts
-const vitestConfig = `import { defineConfig } from 'vitest/config';
+const vitestConfig = dedent`import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -161,6 +173,7 @@ build.mjs
 .DS_Store
 .eslintcache
 vitest.config.ts.map
+*.d.ts.map
 `;
 writeFileSync(path.join(cwd, '.gitignore'), gitignore);
 console.log('✅ .gitignore created.');
@@ -191,8 +204,43 @@ build.mjs
 writeFileSync(path.join(cwd, '.npmignore'), npmignore);
 console.log('✅ .npmignore created.');
 
+// Generate .npmignore
+const mostirConfigMjs = dedent`
+import fg from 'fast-glob';
+
+const ignore = ['**/*.test.ts', '**/__tests__/**', '**/*.d.ts'];
+
+const entryPoints = await fg('src/**/*.ts', {
+  cwd: process.cwd(),
+  absolute: true,
+  onlyFiles: true,
+  ignore
+});
+
+//esbuild settings
+export default {
+  build: {
+    entryPoints,
+    outdir: 'dist',
+    bundle: false,
+    platform: 'node',
+    target: 'esnext',
+    format: 'esm',
+    logLevel: 'info',
+    outbase: 'src',
+    metafile: true,
+    sourcemap: false,
+  },
+  ignore
+};
+`;
+writeFileSync(path.join(cwd, 'mostir.config.mjs'), mostirConfigMjs);
+console.log('✅ mostir.config.mjs created.');
+
 // Install dev dependencies
 console.log('📦 Installing dev dependencies...');
-execSync('pnpm add -D bumpp prettier vitest typescript @types/node', { stdio: 'inherit' });
+execSync('pnpm add -D bumpp prettier vitest typescript @types/node mostir', {
+  stdio: 'inherit'
+});
 
 console.log('\n🎉 Initialization complete.');
