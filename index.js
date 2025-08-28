@@ -43,7 +43,7 @@ pkg.scripts = {
   ...pkg.scripts,
   dev: pkg.scripts?.dev || 'pnpm run build',
   ['build:type']: pkg.scripts?.['build:type'] || 'tsc --emitDeclarationOnly',
-  ['build:js']: pkg.scripts?.['build:js'] || 'node build.mjs',
+  ['build:js']: pkg.scripts?.['build:js'] || 'mostir build --s --v',
   build: pkg.scripts?.build || 'pnpm run build:type && pnpm run build:js',
   format: pkg.scripts?.format || 'prettier --write .',
   test:
